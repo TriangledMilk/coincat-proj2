@@ -186,10 +186,10 @@ async function loadItems() {
       /*node.querySelector('.coin-specs').textContent =
         `Metal: ${item.gold_or_silver.charAt(0).toUpperCase() + item.gold_or_silver.slice(1)} · Purity: ${item.purity} · Count: ${item.count} · ${Number(item.weight_g).toFixed(2)} g · ${Number(item.weight_toz).toFixed(5)} troy oz · ${Number(item.AMW_toz).toFixed(5)} AMW troy oz · Number: ${item.number}`;*/
 
-      node.querySelector('.coin-metal').textContent = `Metal: ${item.gold_or_silver.charAt(0).toUpperCase() + item.gold_or_silver.slice(1)}`;
-      node.querySelector('.coin-purity').textContent = `Purity: ${item.purity}`;
-      node.querySelector('.coin-weight').textContent = `Weight: ${Number(item.weight_g).toFixed(2)} g · ${Number(item.weight_toz).toFixed(5)} troy oz`;
-      node.querySelector('.coin-actual-metal').textContent = `Actual metal weight: ${Number(item.AMW_toz).toFixed(5)} troy oz`;
+      node.querySelector('.coin-metal').textContent = `${item.gold_or_silver.charAt(0).toUpperCase() + item.gold_or_silver.slice(1) + item.purity}`;
+      //node.querySelector('.coin-purity').textContent = `Purity: ${item.purity}`;
+      node.querySelector('.coin-weight').textContent = `${Number(item.weight_g).toFixed(2)} g · ${Number(item.weight_toz).toFixed(5)} t oz`;
+      node.querySelector('.coin-actual-metal').textContent = `${Number(item.AMW_toz).toFixed(5)} t oz (Actual Metal Weight)`;
 
       // Insert the production-run details into the card.
       node.querySelector('.coin-run').textContent = `Production run: ${item.production_run}`;
