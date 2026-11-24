@@ -171,6 +171,7 @@ button:disabled {
 }
 
 .coin-type,
+.coin-count,
 .collection-footer {
     color: var(--muteCream);
 }
