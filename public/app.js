@@ -171,12 +171,15 @@ async function loadItems() {
     const fragment = document.createDocumentFragment();
     // Loop over every coin returned by the API.
     for (const item of items) {
-      // Clone the coin card template for this item.
-      const node = template.content.cloneNode(true);
+
+      const node = template.content.cloneNode(true);// Clone the coin card template for this item.
+ 
       // Insert the coin name into the cloned card.
       node.querySelector('.coin-name').textContent = item.name;
-      // Insert the circulation-or-bullion value into the card.
-      node.querySelector('.coin-type').textContent = item.circulation_or_bullion;
+
+      // Insert the circulation-or-bullion value into the card, capitalized.
+      node.querySelector('.coin-type').textContent = item.circulation_or_bullion.charAt(0).toUpperCase() + item.circulation_or_bullion.slice(1);
+
       // Insert metal content, weight, and numbering details into the card.
       node.querySelector('.coin-specs').textContent =
         `Metal: ${item.gold_or_silver} · Purity: ${item.purity} · Count: ${item.count} · ${Number(item.weight_g).toFixed(2)} g · ${Number(item.weight_toz).toFixed(5)} troy oz · ${Number(item.AMW_toz).toFixed(5)} AMW troy oz · Number: ${item.number}`;
