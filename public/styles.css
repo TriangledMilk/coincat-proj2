@@ -1,33 +1,292 @@
-:root { font-family: system-ui, sans-serif; color: #1d2935; background: #eef2f4; line-height: 1.5; }
-* { box-sizing: border-box; }
-body { margin: 0; }
-.layout { max-width: 760px; margin: 3rem auto; padding: 0 1rem; display: grid; gap: 1.5rem; }
-.panel, .collection { background: white; border: 1px solid #d9e1e5; border-radius: 10px; padding: clamp(1.25rem, 5vw, 2.5rem); box-shadow: 0 4px 16px #1d29350a; }
-h1, h2, h3, p { margin-top: 0; }
-h1, h2 { line-height: 1.2; margin-bottom: .5rem; }
-.eyebrow { color: #176050; font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-.field { display: flex; flex-direction: column; margin-bottom: 1rem; }
-label { font-weight: 650; margin-bottom: .3rem; }
-.optional { font-weight: 400; color: #52636e; }
-input, textarea, select, button { font: inherit; }
-input, textarea, select { width: 100%; border: 1px solid #9baeb7; border-radius: 5px; padding: .65rem; }
-input:focus, textarea:focus, select:focus, button:focus-visible { outline: 3px solid #80c8b6; outline-offset: 2px; }
-[aria-invalid="true"] { border-color: #b3261e; }
-.error { color: #a11f18; font-size: .875rem; }
-.years { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-button { background: #176050; color: white; border: 0; border-radius: 5px; padding: .7rem 1.2rem; font-weight: 700; cursor: pointer; }
-button:disabled { opacity: .65; cursor: wait; }
-.form-actions, .coin-actions { display: flex; gap: .75rem; }
-#cancel-edit { background: #52636e; }
-.coin-actions button { margin-top: .25rem; }
-.edit-button { background: #52636e; }
-#form-status { margin: .75rem 0 0; }
-.collection-header { border-bottom: 2px solid #176050; margin-bottom: 1.5rem; }
-.collection-header p:last-child { color: #52636e; }
-.coin-item { border-bottom: 1px solid #d9e1e5; padding-bottom: 1rem; margin-bottom: 1rem; }
-.experience-heading { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-.coin-item h3, .coin-item p { margin-bottom: .5rem; }
-.coin-type, .coin-specs, .coin-run { color: #52636e; }
-.coin-description { white-space: pre-wrap; overflow-wrap: anywhere; }
-.collection-footer { color: #52636e; font-size: .875rem; margin-top: 2rem; }
-@media (max-width: 450px) { .years { grid-template-columns: 1fr; gap: 0; } }
+:root { 
+
+/* :root is a psuedo-class that hits the document's root element. 
+So basically the tippy top / core of the whole document. 
+Equivalent to html{} in this case. */
+
+    font-family: 'Inter', system-ui, sans-serif;
+    color: white;
+	background: #141414;
+	--cream: #F4F3EE;
+    --muteRed: #AF3E2C;
+    --muteCyan: #2C7FAF;
+    --text: white;
+    --muteWarmGrey: #262020;
+    --muteCream: #c7c8d1;
+    --muteCoolGrey: #242528;
+    --background: #141414;
+    --silver: #a9a9a9;
+    --gold: #dabc15;
+
+    --warningRed: #C64A27;
+    --cautionYellow: #CCB531;
+    --goodGreen: #58BC43;
+}
+
+h1 {
+    font-family: "Zalando Sans Expanded", sans-serif;
+    font-size: 3rem;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    text-align: center;
+}
+
+#title {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+}
+
+#description {
+    margin-top: 0.1rem;
+    padding: 0.1rem;
+}
+
+.label {
+    font-family: "Zalando Sans Expanded", sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.05rem;
+    text-align: center;
+    width: 100%;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+}
+
+.zalandoExpanded {
+    font-family: "Zalando Sans Expanded", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+}
+
+.centerPara {
+    text-align: center;
+}
+
+.explainer{
+    font-size: 0.75rem;
+    color:var(--muteCream);
+}
+
+.underExp{
+    font-size: 0.5rem;
+    font-style: italic;
+}
+
+.sublabel{
+    font-style: bold;
+    margin-bottom: 0.5rem;
+}
+
+.caution{
+    border-left: 1rem solid var(--warningRed);
+}
+
+.decent{
+    border-left: 1rem solid var(--cautionYellow);
+}
+
+.good{
+    border-left: 1rem solid var(--goodGreen);
+}
+
+a{
+    color: var(--cautionYellow);
+    text-decoration: none;
+}
+
+a:hover{
+    color: var(--muteCyan);
+}
+
+.chart-input-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+} /*mobile default: stacked on top of each other*/
+
+#update, #input, #chart {
+    display: flex;
+    flex-direction: column; /*mobile default: stacked on top of each other*/
+    padding: 1rem;
+    margin: 0.25rem;
+    border-radius: 0.5rem;
+    min-height: 25vh;
+}
+
+#input{
+    border: 1px solid var(--cream);
+    background-color: var(--muteWarmGrey);
+}
+
+#chart{
+    /*border: 1px solid var(--cream);*/
+    background-color: var(--muteCoolGrey);
+    justify-content: center;
+}
+
+#coinVal, #coinLabel{
+    font-family: "Zalando Sans Expanded", sans-serif;
+    letter-spacing: 0.05rem;
+    text-align: center;
+}
+
+#coinVal{
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 0.1rem;
+}
+
+#coinLabel{
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 0.1rem;
+}
+
+#coinWeight, #coinPurity{
+    border: 0;
+}
+.step2, .step3{
+    font-size: 0.8rem;
+
+}
+
+
+
+
+/* start of code to hide those annoying little up/down arrows on number input fields */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  appearance: textfield;
+} 
+
+input[type="number"], input[type="text"] {
+    font-family: "Zalando Sans Expanded", sans-serif;
+    color: var(--text);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: var(--cream) 1px solid;
+    background-color: var(--background);
+    
+
+}
+
+.numInput{
+    margin: 0.5rem 0 0.5rem 0;
+}
+/* end of said code */
+
+/*
+.coin{
+    display: flex;
+    flex-direction: column; /*mobile default: stacked on top of each other*/
+    /*align-items: center;
+    background-color: var(--muteCoolGrey);
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 0.5rem;
+
+.coin_info,
+.desc_div {
+  flex: 1; 
+}
+
+.coin_info b{
+    /* I already got <b> tags in my html so might as well dawg    
+    font-weight: 650;
+}
+
+*/
+
+
+
+@media (min-width: 700px) { /* larger screens: side by side layout */
+    .chart-input-layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.25rem 0.25rem;
+    } 
+
+  .coin {
+    flex-direction: row; /* larger screens: side by side */
+    align-items: flex-start;
+  }
+
+  #update, #input, #chart {
+    min-height: 50vh;
+    }
+}
+
+.desc_div{
+    /* margin: 1rem; */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: var(--background);
+    border: 1px solid var(--cream);
+}
+
+
+
+#coinMetal {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.radio-button {
+  position: relative; /* position relative to contain the absolutely positioned input */
+  cursor: pointer; /* make the whole label clickable */
+  flex: 1; /* take up equal space as the other flex item */
+}
+
+.radio-button input {
+  position: absolute; /* position the input absolutely within the label */
+  opacity: 0; /* self explanatory */
+}
+
+.styleButton, .radio-button span, #coinWeight, #coinPurity{ /* buttons! */
+  display: block;
+  box-sizing: border-box;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+
+#checking {
+  background-color: var(--muteCoolGrey);
+  color: var(--text);
+  border: 1px solid var(--cream);
+  cursor: pointer;
+}
+
+#checking:hover {
+  background-color: var(--muteCyan);
+}
+
+.styleButton, .radio-button span{
+    width: 100%;
+  text-align: center;
+}
+.radio-button span {
+  background: var(--background);
+  border: 1px solid var(--cream);
+}
+
+/*.radio-button input:checked + span { /* when the input is checked, style the span 
+  background: var(--muteCyan);
+}*/
+
+.radio-button.AgCoin input:checked + span { /* when the input is checked, style the span */
+  background: var(--silver);
+}
+
+.radio-button.AuCoin input:checked + span { /* when the input is checked, style the span */
+  background: var(--gold);
+}
+
+.radio-button input:focus-visible + span { /* when the input is focused, style the span */
+  outline: 2px solid var(--cream);
+  outline-offset: 2px;
+}
