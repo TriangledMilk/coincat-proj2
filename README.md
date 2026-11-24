@@ -1,6 +1,6 @@
 # Coin collection
 
-A public, shared coin collection that demonstrates creating and reading coin records with a native HTML form, an Express API on Netlify Functions, and MongoDB Atlas. Anyone who can access the site can read and add entries. There is no login, editing, or abuse protection.
+A public, shared coin collection that demonstrates creating, reading, updating, and deleting coin records with a native HTML form, an Express API on Netlify Functions, and MongoDB Atlas. Anyone who can access the site can manage entries. There is no login or abuse protection.
 
 ## Prerequisites
 
@@ -12,14 +12,15 @@ A public, shared coin collection that demonstrates creating and reading coin rec
 
 1. Copy `.env.example` to `.env` (do not overwrite an existing file) and set `MONGODB_URI` to your Atlas connection string. Do not commit or share credentials.
 2. Run `npm install` and then `npm run dev`. The dev script runs the latest Netlify CLI through `npx`; the first run may ask to install it. Netlify CLI loads variables from `.env` for local development. Open the local URL printed by the CLI.
-3. Enter a coin's details and submit it. The shared collection beneath the form will reload from MongoDB.
+3. Enter a coin's details and submit it. Enter weight once and choose grams or troy ounces; changing units converts the displayed value using 31.1034768 grams per troy ounce. The form saves both weight units. Actual metal weight is calculated from troy ounces multiplied by purity. Calculated grams display two decimal places; calculated troy-ounce values display five. The shared collection beneath the form will reload from MongoDB.
 
 ## API
 
-Both endpoints use JSON. The `silver_coins` collection is chosen explicitly; no additional index is created.
+The API uses JSON. The `SDP2_coin_collection` collection is chosen explicitly; no additional index is created.
 
-- `GET /api/coin-items` returns the retrieved MongoDB documents as an array, including MongoDB-generated fields.
-- `POST /api/coin-items` accepts `name`, `circulation_or_bullion`, `Ag`, `weight_g`, `weight_toz`, `ASW_toz`, `number`, `production_run`, and `description`. `circulation_or_bullion` must be `circulation` or `bullion`; `Ag` must be between 0 and 1; `number` must be a non-negative integer. Required text fields are trimmed and limited to 120 characters for `name` and `production_run`, and 2,000 for `description`. A valid item returns HTTP 201; invalid input returns HTTP 400.
+- `GET /api/coin-collection` returns the retrieved MongoDB documents as an array, including MongoDB-generated fields.
+- `POST /api/coin-collection` and `PUT /api/coin-collection/:id` accept `name`, `circulation_or_bullion`, `gold_or_silver`, `purity`, `count`, `weight_g`, `weight_toz`, `AMW_toz`, `number`, `production_run`, and `description`. `circulation_or_bullion` must be `circulation` or `bullion`; `gold_or_silver` must be `gold` or `silver`; `purity` must be between 0 and 1; `count` and `number` must be non-negative integers. Required text fields are trimmed and limited to 120 characters for `name` and `production_run`, and 2,000 for `description`. A valid create returns HTTP 201; invalid input returns HTTP 400.
+- `DELETE /api/coin-collection/:id` deletes the matching coin and returns HTTP 204.
 
 Example request body:
 
@@ -27,10 +28,12 @@ Example request body:
 {
   "name": "American Morgan Dollar",
   "circulation_or_bullion": "circulation",
-  "Ag": 0.9,
+  "gold_or_silver": "silver",
+  "purity": 0.925,
+  "count": 2,
   "weight_g": 26.73,
   "weight_toz": 0.85944,
-  "ASW_toz": 0.77344,
+  "AMW_toz": 0.79498,
   "number": 2,
   "production_run": "1878-1904, 1921",
   "description": "A United States dollar coin minted from 1878 to 1904, and again in 1921."

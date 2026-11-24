@@ -4,14 +4,151 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Zalando+Sans+Expanded:ital,wght@0,200..900;1,200..900&family=Zalando+Sans:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Coin Catalogue</title>
     <link rel="icon" type="image/png" href="./assets/jetpack_cat.png"/>
   <script type="module" src="/app.js"></script>
 </head>
+
 <body>
-  
+  <h1 id="title">Coin Cat·alogue</h1>
+
+  <main class="layout">
+    <section class="panel" aria-labelledby="form-heading">
+      <h2 class="label" id="form-heading">Add a Coin</h2>
+      <p class="sublabel centerPara" id="form-description">Add a coin and its specifications to the shared collection.</p>
+
+      <form id="coin-form" novalidate>
+
+        <div class="field">
+          <label for="name">Coin Name</label>
+          <input id="name" name="name" type="text" required maxlength="120" aria-describedby="name-error">
+          <span class="error" id="name-error"></span>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="number">Number of coins</label>
+            <input id="number" name="number" type="number" required min="0" step="1" placeholder="2" aria-describedby="number-error">
+            <span class="error" id="number-error"></span>
+          </div>
+
+          <div class="field">
+            <label for="production-run">Production run</label>
+            <input id="production-run" name="production_run" type="text" required maxlength="120" placeholder="1878-1904, 1921" aria-describedby="production-run-error">
+            <span class="error" id="production-run-error"></span>
+          </div>
+
+        </div>
+      
+        
+        <div class="field">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" rows="4" required maxlength="2000" aria-describedby="description-error"></textarea>
+          <span class="error" id="description-error"></span>
+        </div>
+
+        <fieldset class="field radio-field" aria-describedby="circulation-or-bullion-error">
+          <legend>Coin type</legend>
+          <div class="radio-options">
+            <label class="radio-button Bullion" for="type-bullion">
+              <input type="radio" class="Bullion" id="type-bullion" name="circulation_or_bullion" value="bullion" required aria-describedby="circulation-or-bullion-error">
+              <span class="zalandoExpanded">Bullion</span>
+            </label>
+
+            <label class="radio-button Circ" for="type-circulation">
+              <input type="radio" class="Circ" id="type-circulation" name="circulation_or_bullion" value="circulation" aria-describedby="circulation-or-bullion-error">
+              <span class="zalandoExpanded">Circulation</span>
+            </label>
+          </div>
+          <span class="error" id="circulation-or-bullion-error"></span>
+        </fieldset>
+
+        <fieldset class="field radio-field" aria-describedby="gold-or-silver-error">
+          <legend>Metal type</legend>
+          <div class="radio-options">
+            <label class="radio-button Ag" for="metal-silver">
+              <input type="radio" class="Ag" id="metal-silver" name="gold_or_silver" value="silver" required aria-describedby="gold-or-silver-error">
+              <span class="zalandoExpanded">Silver</span>
+            </label>
+
+            <label class="radio-button Au" for="metal-gold">
+              <input type="radio" class="Au" id="metal-gold" name="gold_or_silver" value="gold" aria-describedby="gold-or-silver-error">
+              <span class="zalandoExpanded">Gold</span>
+            </label>
+          </div>
+          <span class="error" id="gold-or-silver-error"></span>
+        </fieldset>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="purity">Metal purity</label>
+            <input id="purity" name="purity" type="number" required min="0" max="1" step="0.0001" placeholder="0.9250" aria-describedby="purity-error">
+            <span class="error" id="purity-error"></span>
+          </div>
+
+          <div class="field">
+            <label for="weight-value">Weight</label>
+            <div class="weight-entry">
+              <input id="weight-value" name="weight" type="number" required min="0" step="any" placeholder="26.73" aria-describedby="weight-value-error">
+              <input id="weight-g" name="weight_g" type="hidden">
+              <input id="weight-toz" name="weight_toz" type="hidden">
+              <select id="weight-unit" name="weight_unit" data-error-target="weight-value-error" aria-label="Weight unit" aria-describedby="weight-value-error">
+                <option value="g">g</option>
+                <option value="toz">troy oz</option>
+              </select>
+            </div>
+            <span class="error" id="weight-value-error"></span>
+          </div>
+
+          <!--<div class="field">
+            <label for="amw-toz">Actual metal weight (troy oz)</label>
+            <input id="amw-toz" name="AMW_toz" type="number" required min="0" step="any" placeholder="0.77344" aria-describedby="amw-toz-error" readonly title="Calculated from weight and purity.">
+            <span class="error" id="amw-toz-error"></span>
+          </div> -->
+
+          
+
+          
+        </div>
+
+        <div class="form-actions"><!--Add coin/editing buttons-->
+          <button type="submit">Add coin</button>
+          <button type="button" id="cancel-edit" hidden>Cancel edit</button>
+        </div>
+
+        <p id="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="collection" aria-labelledby="coins-heading">
+      <header class="collection-header">
+        <p class="eyebrow">Shared collection</p>
+        <h2 id="coins-heading">Coins</h2>
+        <p>Coin details and specifications</p>
+      </header>
+      <div id="coin-status" role="status" aria-live="polite">Loading coins…</div>
+      <div id="coin-items"></div>
+      <footer class="collection-footer">Coin information from the shared collection.</footer>
+    </section>
+  </main>
+
+  <template id="coin-item-template">
+    <article class="coin-item">
+      <div class="experience-heading">
+        <h3 class="coin-name"></h3>
+        <p class="coin-type"></p>
+      </div>
+      <p class="coin-specs"></p>
+      <p class="coin-run"></p>
+      <p class="coin-description"></p>
+      <div class="coin-actions">
+        <button class="edit-button" aria-label="Edit coin">Edit</button>
+        <button class="delete-button" aria-label="Delete coin">Delete</button>
+      </div>
+    </article>
+  </template>
 </body>
 </html>

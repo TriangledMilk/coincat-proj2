@@ -10,8 +10,9 @@ const coinItems = document.querySelector('#coin-items');
 const template = document.querySelector('#coin-item-template');
 // Store the form submit button because its text and disabled state change.
 const submitButton = form.querySelector('button[type="submit"]');
+const API_URL = '/api/coin-collection';
 // Store all form fields that need validation and form-data access.
-const fields = [...form.querySelectorAll('input, textarea, select')];
+const fields = [...form.querySelectorAll('input:not([type="hidden"]), textarea, select')];
 // Store the form heading so it can switch between add and edit modes.
 const formHeading = document.querySelector('#form-heading');
 // Store the form description so it can explain the active mode.
@@ -20,6 +21,28 @@ const formDescription = document.querySelector('#form-description');
 const cancelEditButton = document.querySelector('#cancel-edit');
 // Track the ID of the coin being edited, or null when adding.
 let editingId = null;
+
+//elements for weight, weight unit, and calculated fields
+const weightField = form.elements.weight;
+const weightUnitField = form.elements.weight_unit;
+const weightGramsField = form.elements.weight_g;
+const weightTroyOuncesField = form.elements.weight_toz;
+const purityField = form.elements.purity;
+const actualMetalWeightField = form.elements.AMW_toz;
+const GRAMS_PER_TROY_OUNCE = 31.1034768;
+let currentWeightUnit = weightUnitField.value;
+let weightEdited = false;
+
+
+// Define a function that finds the validation message element for a form field.
+function getFieldErrorElement(field) {
+  const errorId = field.dataset.errorTarget || (field.type === 'radio'
+    ? `${field.name.replace(/_/g, '-')}-error`
+    : `${field.id}-error`);
+  const errorElement = document.getElementById(errorId);
+  if (!errorElement) throw new Error(`Missing validation message element: ${errorId}`);
+  return errorElement;
+}
 
 // Define a function that validates one form field.
 function validateField(field) {
@@ -31,7 +54,7 @@ function validateField(field) {
   // Ask the browser whether the field passes all its validation rules.
   const valid = field.checkValidity();
   // Find the field's error element and display an error or clear it.
-  document.getElementById(`${field.id}-error`).textContent = valid ? '' : field.validationMessage;
+  getFieldErrorElement(field).textContent = valid ? '' : field.validationMessage;
   // Remove the invalid accessibility attribute when the field is valid.
   if (valid) field.removeAttribute('aria-invalid');
   // Otherwise mark the field as invalid for accessibility and styling.
@@ -39,6 +62,58 @@ function validateField(field) {
   // Return the result so the submit handler knows whether to continue.
   return valid;
 }
+
+function updateWeightValues() {
+  const weight = weightField.valueAsNumber;
+  if (!Number.isFinite(weight)) {
+    weightGramsField.value = '';
+    weightTroyOuncesField.value = '';
+    updateActualMetalWeight();
+    return;
+  }
+  const weightGrams = weightUnitField.value === 'g'
+    ? weight
+    : weight * GRAMS_PER_TROY_OUNCE;
+  const weightTroyOunces = weightUnitField.value === 'g'
+    ? weight / GRAMS_PER_TROY_OUNCE
+    : weight;
+  weightGramsField.value = String(weightGrams);
+  weightTroyOuncesField.value = String(weightTroyOunces);
+  updateActualMetalWeight();
+}
+
+function updateActualMetalWeight() {
+  const purity = purityField.valueAsNumber;
+  const troyOunces = weightTroyOuncesField.value === ''
+    ? Number.NaN
+    : Number(weightTroyOuncesField.value);
+  if (!Number.isFinite(troyOunces) || !Number.isFinite(purity)) {
+    actualMetalWeightField.value = '';
+    return;
+  }
+  actualMetalWeightField.value = (troyOunces * purity).toFixed(5);
+}
+
+function convertWeightForNewUnit() {
+  const weight = weightField.valueAsNumber;
+  const newUnit = weightUnitField.value;
+  if (Number.isFinite(weight) && newUnit !== currentWeightUnit) {
+    const convertedWeight = currentWeightUnit === 'g'
+      ? weight / GRAMS_PER_TROY_OUNCE
+      : weight * GRAMS_PER_TROY_OUNCE;
+    weightField.value = convertedWeight.toFixed(newUnit === 'g' ? 2 : 5);
+  }
+  currentWeightUnit = newUnit;
+  weightEdited = true;
+  updateWeightValues();
+}
+
+weightField.addEventListener('input', () => {
+  weightEdited = true;
+  updateWeightValues();
+});
+weightUnitField.addEventListener('change', convertWeightForNewUnit);
+purityField.addEventListener('input', updateActualMetalWeight);
 
 // Loop through every form field to attach live validation listeners.
 for (const field of fields) {
@@ -52,6 +127,8 @@ for (const field of fields) {
 function clearForm() {
   // Clear every form control back to its default value.
   form.reset();
+  currentWeightUnit = weightUnitField.value;
+  weightEdited = false;
   // Forget which coin was being edited.
   editingId = null;
   // Restore the add-coin form heading.
@@ -67,7 +144,7 @@ function clearForm() {
     // Remove the invalid accessibility attribute.
     field.removeAttribute('aria-invalid');
     // Clear any validation message for the field.
-    document.getElementById(`${field.id}-error`).textContent = '';
+    getFieldErrorElement(field).textContent = '';
   }
 }
 
@@ -77,16 +154,23 @@ function startEdit(item) {
   editingId = item._id;
   // Fill the name field with the coin name.
   form.elements.name.value = item.name;
-  // Fill the circulation or bullion dropdown.
+  // Select the circulation or bullion radio option.
   form.elements.circulation_or_bullion.value = item.circulation_or_bullion;
-  // Fill the silver-content field.
-  form.elements.Ag.value = item.Ag;
-  // Fill the weight-in-grams field.
-  form.elements.weight_g.value = item.weight_g;
-  // Fill the weight-in-troy-ounces field.
-  form.elements.weight_toz.value = item.weight_toz;
-  // Fill the actual-silver-weight field.
-  form.elements.ASW_toz.value = item.ASW_toz;
+  // Select the coin's metal radio option.
+  form.elements.gold_or_silver.value = item.gold_or_silver;
+  // Fill the metal-purity field.
+  form.elements.purity.value = item.purity;
+  // Fill the number-of-coins field; both API properties represent this value.
+  form.elements.number.value = item.number ?? item.count;
+  // Show the stored weight in grams by default.
+  weightUnitField.value = 'g';
+  currentWeightUnit = 'g';
+  weightField.value = Number(item.weight_g).toFixed(2);
+  weightGramsField.value = item.weight_g;
+  weightTroyOuncesField.value = item.weight_toz;
+  weightEdited = false; // Reset the weight-edited flag because the form is now populated with existing data.
+  // Fill the actual-metal-weight field.
+  form.elements.AMW_toz.value = item.AMW_toz;
   // Fill the coin number field.
   form.elements.number.value = item.number;
   // Fill the production-run field.
@@ -124,7 +208,7 @@ async function loadItems() {
   // Catch network, HTTP, and parsing errors for the whole operation.
   try {
     // Request the coin list; fetch defaults to the GET HTTP method.
-    const response = await fetch('/api/coin-items');
+    const response = await fetch(API_URL);
     // Throw an error if the server returns a non-success response.
     if (!response.ok) throw new Error('Unable to load coins. Please try again later.');
     // Parse the successful JSON response into a JavaScript array.
@@ -139,9 +223,9 @@ async function loadItems() {
       node.querySelector('.coin-name').textContent = item.name;
       // Insert the circulation-or-bullion value into the card.
       node.querySelector('.coin-type').textContent = item.circulation_or_bullion;
-      // Insert all silver weight and numbering details into the card.
+      // Insert metal content, weight, and numbering details into the card.
       node.querySelector('.coin-specs').textContent =
-        `Ag: ${item.Ag} · ${item.weight_g} g · ${item.weight_toz} troy oz · ${item.ASW_toz} ASW troy oz · Number: ${item.number}`;
+        `Metal: ${item.gold_or_silver} · Purity: ${item.purity} · Count: ${item.count} · ${Number(item.weight_g).toFixed(2)} g · ${Number(item.weight_toz).toFixed(5)} troy oz · ${item.AMW_toz} AMW troy oz · Number: ${item.number}`;
       // Insert the production-run details into the card.
       node.querySelector('.coin-run').textContent = `Production run: ${item.production_run}`;
       // Insert the coin description into the card.
@@ -163,7 +247,7 @@ async function loadItems() {
         // Catch errors from the delete request.
         try {
           // Send a DELETE request to the API using this coin's ID.
-          const deleteResponse = await fetch(`/api/coin-items/${item._id}`, { method: 'DELETE' });
+          const deleteResponse = await fetch(`${API_URL}/${item._id}`, { method: 'DELETE' });
           // Throw an error if the server cannot delete the coin.
           if (!deleteResponse.ok) throw new Error('Unable to delete the coin. Please try again later.');
           // Reset the form if the deleted coin was being edited.
@@ -218,14 +302,32 @@ form.addEventListener('submit', async (event) => {
     // Convert their submitted text values into JavaScript numbers.
     data[field.name] = Number(data[field.name]);
   }
-  // Determine whether this submission should create or update a coin.
+  data.count = data.number;
   const isEditing = editingId !== null;
+  if (isEditing && !weightEdited) {
+    data.weight_g = Number(weightGramsField.value);
+    data.weight_toz = Number(weightTroyOuncesField.value);
+  } else {
+    if (data.weight_unit === 'g') {
+      data.weight_g = data.weight;
+      data.weight_toz = data.weight / GRAMS_PER_TROY_OUNCE;
+    } else {
+      data.weight_toz = data.weight;
+      data.weight_g = data.weight * GRAMS_PER_TROY_OUNCE;
+    }
+  }
+  data.AMW_toz = Number((data.weight_toz * data.purity).toFixed(5));
+  delete data.weight;
+  delete data.weight_unit;
+
+  // Determine whether this submission should create or update a coin.
   // Use the coin ID in the URL for updates; otherwise use the collection URL.
-  const url = isEditing ? `/api/coin-items/${encodeURIComponent(editingId)}` : '/api/coin-items';
+  const url = isEditing ? `${API_URL}/${encodeURIComponent(editingId)}` : API_URL;
   // Disable the submit button so the request cannot be sent twice.
   submitButton.disabled = true;
   // Show a mode-specific saving message.
   formStatus.textContent = isEditing ? 'Updating coin…' : 'Saving coin…';
+
   // Catch errors from the API request and response handling.
   try {
     // Send JSON with POST for a new coin or PUT for an existing coin.
@@ -237,6 +339,7 @@ form.addEventListener('submit', async (event) => {
       // Convert the form data object into a JSON request body.
       body: JSON.stringify(data)
     });
+
     // Handle unsuccessful create or update responses.
     if (!response.ok) {
       // Try to read a server-provided error message, or use an empty object.
@@ -244,23 +347,28 @@ form.addEventListener('submit', async (event) => {
       // Throw the server error or a fallback message.
       throw new Error(body.error || 'Unable to save the coin. Please try again.');
     }
-    // Reset the form and return to add mode after a successful save.
-    clearForm();
-    // Show a mode-specific success message.
-    formStatus.textContent = isEditing ? 'Coin updated.' : 'Coin saved.';
+
+    clearForm(); // Reset the form and return to add mode after a successful save.
+
+    formStatus.textContent = isEditing ? 'Coin updated.' : 'Coin saved.'; // Show a mode-specific success message.
+
     // Reload the cards and replace the success message if refreshing fails.
-    if (!await loadItems()) formStatus.textContent = isEditing
+    if (!await loadItems()) formStatus.textContent = isEditing 
+    // The if/else structure here uses "ternary" operators.
+    // Equivalent to "if (isEditing) { ... } else { ... }" but more compact.
+    // ergo, if X? Y:Z means "if X is true, then do Y. Else, do Z".
+
       // Use an update-specific refresh warning in edit mode.
       ? 'Coin updated, but the collection could not be refreshed.'
+
       // Use a save-specific refresh warning in add mode.
       : 'Coin saved, but the collection could not be refreshed.';
-  } catch (error) {
+    } catch (error) {
     // Show the server error or a fallback save error message.
     formStatus.textContent = error.message || 'Unable to save the coin. Please try again.';
-  } finally {
-    // Re-enable the submit button after success or failure.
-    submitButton.disabled = false;
-  }
+    } finally {
+    submitButton.disabled = false; // Re-enable the submit button after success or failure.
+    } //end of try/catch/finally
 });
-// Load and render the coin list immediately when the page script starts.
-loadItems();
+
+loadItems(); // Load and render the coin list immediately when the page script starts.

@@ -9,7 +9,7 @@ app.use(express.json({ limit: '16kb' }));
 // note : the links were going to a coin items js because i was fooling around/trying to change this to connect to my own database - check the .env file
 
 // server side endpoint to delete a thing in the thing
-app.delete('/api/coin-items/:id', async (req, res, next) => {
+app.delete('/api/coin-collection/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     await connectDatabase();
@@ -22,16 +22,16 @@ app.delete('/api/coin-items/:id', async (req, res, next) => {
 });
 
 // server side endpoint to edit a coin item
-app.put('/api/coin-items/:id', async (req, res, next) => {
+app.put('/api/coin-collection/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     const {
-      name, circulation_or_bullion, Ag, weight_g, weight_toz, ASW_toz, number, production_run, description
+      name, circulation_or_bullion, gold_or_silver, purity, count, weight_g, weight_toz, AMW_toz, number, production_run, description
     } = req.body || {};
     await connectDatabase();
     const item = await CoinEntry.findByIdAndUpdate(
       id,
-      { name, circulation_or_bullion, Ag, weight_g, weight_toz, ASW_toz, number, production_run, description },
+      { name, circulation_or_bullion, gold_or_silver, purity, count, weight_g, weight_toz, AMW_toz, number, production_run, description },
       { new: true, runValidators: true }
     );
     if (!item) return res.status(404).json({ error: 'Coin not found.' });
@@ -42,7 +42,7 @@ app.put('/api/coin-items/:id', async (req, res, next) => {
 });
 
 // server side endpoint to get all coin items
-app.get('/api/coin-items', async (req, res, next) => {
+app.get('/api/coin-collection', async (req, res, next) => {
   try {
     await connectDatabase();
     const items = await CoinEntry.find().lean();
@@ -53,13 +53,13 @@ app.get('/api/coin-items', async (req, res, next) => {
 });
 
 // server side endpoint to create a new coin item
-app.post('/api/coin-items', async (req, res, next) => {
+app.post('/api/coin-collection', async (req, res, next) => {
   try {
     const {
-      name, circulation_or_bullion, Ag, Au, count, weight_g, weight_toz, ASW_toz, number, production_run, description
+      name, circulation_or_bullion, gold_or_silver, purity, count, weight_g, weight_toz, AMW_toz, number, production_run, description
     } = req.body || {};
     const item = new CoinEntry({
-      name, circulation_or_bullion, Ag, Au, count, weight_g, weight_toz, ASW_toz, number, production_run, description
+      name, circulation_or_bullion, gold_or_silver, purity, count, weight_g, weight_toz, AMW_toz, number, production_run, description
     });
     await item.validate();
     await connectDatabase();
