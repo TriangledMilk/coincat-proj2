@@ -192,7 +192,7 @@ async function loadItems() {
       node.querySelector('.coin-actual-metal').textContent = `${Number(item.AMW_toz).toFixed(5)} t oz (Actual ${item.gold_or_silver.charAt(0).toUpperCase() + item.gold_or_silver.slice(1)} Weight)`;
 
       // Insert the production-run details into the card.
-      node.querySelector('.coin-run').textContent = `Year / production: ${item.production_run}`;
+      node.querySelector('.coin-run').textContent = `Year / production ${item.production_run}`;
       // Insert the coin description into the card.
       node.querySelector('.coin-description').textContent = item.description;
       // Find the edit button in the cloned card.
