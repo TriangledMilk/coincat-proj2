@@ -42,6 +42,6 @@ Example request body:
 
 ## Deploy on Vercel
 
-Connect the repository to Vercel and deploy with the default settings. The root `app.js` exports the Express app so Vercel can route `/api/coin-collection` requests to the existing API. Add `MONGODB_URI` in the Vercel project's environment-variable settings for the deployment environments you use, then redeploy. A local `.env` file is not deployed. Use a dedicated least-privileged database user, and ensure Atlas network access permits Vercel Functions. After deployment, add a coin and reload the page to confirm that it persists. Consider appropriate abuse controls before using this public API for anything beyond a demo.
+Connect the repository to Vercel with the repository root as the Root Directory. The checked-in `vercel.json` selects the Express framework and clears a custom static output-directory override; root `app.js` exports the existing API app. Add `MONGODB_URI` in the Vercel project's environment-variable settings for the deployment environments you use, then redeploy. A local `.env` file is not deployed. Use a dedicated least-privileged database user, and ensure Atlas network access permits Vercel Functions. After deployment, add a coin and reload the page to confirm that it persists. Consider appropriate abuse controls before using this public API for anything beyond a demo.
 
 Automated tests are intentionally outside this demo's scope.
