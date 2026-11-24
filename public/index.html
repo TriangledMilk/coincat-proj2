@@ -93,8 +93,6 @@
             <label for="weight-value">Weight</label>
             <div class="weight-entry">
               <input id="weight-value" name="weight" type="number" required min="0" step="any" placeholder="26.73" aria-describedby="weight-value-error">
-              <input id="weight-g" name="weight_g" type="hidden">
-              <input id="weight-toz" name="weight_toz" type="hidden">
               <select id="weight-unit" name="weight_unit" data-error-target="weight-value-error" aria-label="Weight unit" aria-describedby="weight-value-error">
                 <option value="g">g</option>
                 <option value="toz">troy oz</option>
@@ -103,15 +101,6 @@
             <span class="error" id="weight-value-error"></span>
           </div>
 
-          <!--<div class="field">
-            <label for="amw-toz">Actual metal weight (troy oz)</label>
-            <input id="amw-toz" name="AMW_toz" type="number" required min="0" step="any" placeholder="0.77344" aria-describedby="amw-toz-error" readonly title="Calculated from weight and purity.">
-            <span class="error" id="amw-toz-error"></span>
-          </div> -->
-
-          
-
-          
         </div>
 
         <div class="form-actions"><!--Add coin/editing buttons-->
