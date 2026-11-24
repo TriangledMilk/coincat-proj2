@@ -175,7 +175,7 @@ async function loadItems() {
       const node = template.content.cloneNode(true);// Clone the coin card template for this item.
  
       // Insert the coin name into the cloned card.
-      node.querySelector('.coin-name').textContent = item.name + ` · :${item.count}`;
+      node.querySelector('.coin-name').textContent = item.name + ` · ${item.count} coins`;
 
       //node.querySelector('.coin-count').textContent = `Count: ${item.count}`;
 
@@ -189,10 +189,10 @@ async function loadItems() {
       node.querySelector('.coin-metal').textContent = `${item.gold_or_silver.charAt(0).toUpperCase() + item.gold_or_silver.slice(1) + " " + item.purity}`;
       //node.querySelector('.coin-purity').textContent = `Purity: ${item.purity}`;
       node.querySelector('.coin-weight').textContent = `${Number(item.weight_g).toFixed(2)} g · ${Number(item.weight_toz).toFixed(5)} t oz`;
-      node.querySelector('.coin-actual-metal').textContent = `${Number(item.AMW_toz).toFixed(5)} t oz (Actual Metal)`;
+      node.querySelector('.coin-actual-metal').textContent = `${Number(item.AMW_toz).toFixed(5)} t oz (Actual ${item.gold_or_silver.charAt(0).toUpperCase() + item.gold_or_silver.slice(1)} Weight)`;
 
       // Insert the production-run details into the card.
-      node.querySelector('.coin-run').textContent = `${item.production_run}`;
+      node.querySelector('.coin-run').textContent = `Year / production: ${item.production_run}`;
       // Insert the coin description into the card.
       node.querySelector('.coin-description').textContent = item.description;
       // Find the edit button in the cloned card.
