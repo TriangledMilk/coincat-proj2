@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import { connectDatabase } from './database.js';
-import { CoinItem } from './coin-items.js';
+import { CoinEntry } from './coin-collection.js';
 
 export const app = express();
 app.use(express.json({ limit: '16kb' }));
@@ -13,7 +13,7 @@ app.delete('/api/coin-items/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     await connectDatabase();
-    const result = await CoinItem.findByIdAndDelete(id);
+    const result = await CoinEntry.findByIdAndDelete(id);
     if (!result) return res.status(404).json({ error: 'Coin not found.' });
     res.status(204).end();
   } catch (error) {
@@ -29,7 +29,7 @@ app.put('/api/coin-items/:id', async (req, res, next) => {
       name, circulation_or_bullion, Ag, weight_g, weight_toz, ASW_toz, number, production_run, description
     } = req.body || {};
     await connectDatabase();
-    const item = await CoinItem.findByIdAndUpdate(
+    const item = await CoinEntry.findByIdAndUpdate(
       id,
       { name, circulation_or_bullion, Ag, weight_g, weight_toz, ASW_toz, number, production_run, description },
       { new: true, runValidators: true }
@@ -45,7 +45,7 @@ app.put('/api/coin-items/:id', async (req, res, next) => {
 app.get('/api/coin-items', async (req, res, next) => {
   try {
     await connectDatabase();
-    const items = await CoinItem.find().lean();
+    const items = await CoinEntry.find().lean();
     res.json(items);
   } catch (error) {
     next(error);
@@ -56,10 +56,10 @@ app.get('/api/coin-items', async (req, res, next) => {
 app.post('/api/coin-items', async (req, res, next) => {
   try {
     const {
-      name, circulation_or_bullion, Ag, weight_g, weight_toz, ASW_toz, number, production_run, description
+      name, circulation_or_bullion, Ag, Au, count, weight_g, weight_toz, ASW_toz, number, production_run, description
     } = req.body || {};
-    const item = new CoinItem({
-      name, circulation_or_bullion, Ag, weight_g, weight_toz, ASW_toz, number, production_run, description
+    const item = new CoinEntry({
+      name, circulation_or_bullion, Ag, Au, count, weight_g, weight_toz, ASW_toz, number, production_run, description
     });
     await item.validate();
     await connectDatabase();
