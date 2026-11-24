@@ -175,9 +175,9 @@ async function loadItems() {
       const node = template.content.cloneNode(true);// Clone the coin card template for this item.
  
       // Insert the coin name into the cloned card.
-      node.querySelector('.coin-name').textContent = item.name;
+      node.querySelector('.coin-name').textContent = item.name + ` · :${item.count}`;
 
-      node.querySelector('.coin-count').textContent = `Count: ${item.count}`;
+      //node.querySelector('.coin-count').textContent = `Count: ${item.count}`;
 
       // Insert the circulation-or-bullion value into the card, capitalized.
       node.querySelector('.coin-type').textContent = item.circulation_or_bullion.charAt(0).toUpperCase() + item.circulation_or_bullion.slice(1);

@@ -184,6 +184,11 @@ button:disabled {
     color: var(--muteCream);
 }
 
+.coin-deets p{
+    color: var(--muteCream);
+    margin: 0 0 0.5rem;
+}
+
 .layout { 
     max-width: 760px; 
     margin: 3rem auto; 
