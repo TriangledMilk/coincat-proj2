@@ -1,11 +1,11 @@
 # Coin collection
 
-A public, shared coin collection that demonstrates creating, reading, updating, and deleting coin records with a native HTML form, an Express API on Netlify Functions, and MongoDB Atlas. Anyone who can access the site can manage entries. There is no login or abuse protection.
+A public, shared coin collection that demonstrates creating, reading, updating, and deleting coin records with a native HTML form, an Express API, and MongoDB Atlas. Anyone who can access the site can manage entries. There is no login or abuse protection.
 
 ## Prerequisites
 
 - Node.js 22 or newer and npm.
-- A MongoDB Atlas cluster, a database user with permission to read and write the intended database, and network access configured to permit connections from your development environment and Netlify Functions.
+- A MongoDB Atlas cluster, a database user with permission to read and write the intended database, and network access configured to permit connections from your development environment and Vercel Functions.
 - A MongoDB connection string that includes the intended database name. See MongoDB's documentation for URL-encoding special characters in credentials.
 
 ## Run locally
@@ -40,8 +40,8 @@ Example request body:
 }
 ```
 
-## Deploy on Netlify
+## Deploy on Vercel
 
-Push the project to GitHub and connect the repository in the Netlify dashboard. The checked-in `netlify.toml` supplies the publish directory, function directory, and API rewrite; no build command is needed. In Netlify's environment-variable settings, configure `MONGODB_URI` for the relevant deployment contexts with a scope available to Functions, then deploy. A local `.env` file is not deployed. Use a dedicated least-privileged database user, and ensure Atlas network access permits Netlify's function infrastructure. After deployment, add a coin and reload the page to confirm that it persists. Consider appropriate abuse controls before using this public API for anything beyond a demo.
+Connect the repository to Vercel and deploy with the default settings. The root `app.js` exports the Express app so Vercel can route `/api/coin-collection` requests to the existing API. Add `MONGODB_URI` in the Vercel project's environment-variable settings for the deployment environments you use, then redeploy. A local `.env` file is not deployed. Use a dedicated least-privileged database user, and ensure Atlas network access permits Vercel Functions. After deployment, add a coin and reload the page to confirm that it persists. Consider appropriate abuse controls before using this public API for anything beyond a demo.
 
 Automated tests are intentionally outside this demo's scope.
