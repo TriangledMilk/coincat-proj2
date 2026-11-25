@@ -175,19 +175,14 @@ async function loadItems() {
       const node = template.content.cloneNode(true);// Clone the coin card template for this item.
  
       // Insert the coin name into the cloned card.
+      node.querySelector('.coin-image').innerHTML = `<img src="images/${item.gold_or_silver}_catcoin.png" alt="${item.name}">`;
       node.querySelector('.coin-name').textContent = item.name + ` · ${item.count} coins`;
 
-      //node.querySelector('.coin-count').textContent = `Count: ${item.count}`;
 
-      // Insert the circulation-or-bullion value into the card, capitalized.
       node.querySelector('.coin-type').textContent = item.circulation_or_bullion.charAt(0).toUpperCase() + item.circulation_or_bullion.slice(1);
 
-      // Insert metal content, weight, and numbering details into the card.
-      /*node.querySelector('.coin-specs').textContent =
-        `Metal: ${item.gold_or_silver.charAt(0).toUpperCase() + item.gold_or_silver.slice(1)} · Purity: ${item.purity} · Count: ${item.count} · ${Number(item.weight_g).toFixed(2)} g · ${Number(item.weight_toz).toFixed(5)} troy oz · ${Number(item.AMW_toz).toFixed(5)} AMW troy oz · Number: ${item.number}`;*/
-
+      
       node.querySelector('.coin-metal').textContent = `${item.gold_or_silver.charAt(0).toUpperCase() + item.gold_or_silver.slice(1) + " " + item.purity}`;
-      //node.querySelector('.coin-purity').textContent = `Purity: ${item.purity}`;
       node.querySelector('.coin-weight').textContent = `${Number(item.weight_g).toFixed(2)} g · ${Number(item.weight_toz).toFixed(5)} t oz`;
       node.querySelector('.coin-actual-metal').textContent = `${Number(item.AMW_toz).toFixed(5)} t oz (Actual ${item.gold_or_silver.charAt(0).toUpperCase() + item.gold_or_silver.slice(1)} Weight)`;
 

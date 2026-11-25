@@ -147,11 +147,21 @@ button:disabled {
     gap: 1rem;
 }
 
-.coin-item {
+.coin-item { /* each coin item in the collection */
     padding: 1rem;
-    border: 1px solid var(--cream);
+    /*border: 1px solid var(--cream);*/
     border-radius: 0.5rem;
     background: var(--background);
+
+}
+
+article.coin-item {
+    display: flex;
+    flex-direction: row;
+}
+
+.coin-image{
+    max-width: 100px;
 }
 
 .experience-heading,

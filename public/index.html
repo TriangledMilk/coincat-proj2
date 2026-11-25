@@ -126,26 +126,32 @@
 
   <template id="coin-item-template">
     <article class="coin-item">
-      <div class="experience-heading">
-        <h3 class="coin-name"></h3>
-        <p class="coin-type"></p>
-      </div>
+      <div class="coinImg">
+        <img class="coin-image" src="" alt="" />
+      </div><!--end coinImg-->
+        <div class="deets">
+        <div class="experience-heading">
+          <h3 class="coin-name"></h3>
+          <p class="coin-type"></p>
+        </div>
 
-      <div class="coin-deets">
-        <!--<p class="coin-count"></p>-->
-        <p class="coin-metal"></p>
-        <p class="coin-purity"></p>
-        <p class="coin-weight"></p>
-        <p class="coin-actual-metal"></p>
-        <p class="coin-run"></p>
-      </div>
+        <div class="coin-deets">
+          <!--<p class="coin-count"></p>-->
+          <p class="coin-metal"></p>
+          <p class="coin-purity"></p>
+          <p class="coin-weight"></p>
+          <p class="coin-actual-metal"></p>
+          <p class="coin-run"></p>
+        </div>
 
-      <p class="coin-description"></p>
-      
-      <div class="coin-actions">
-        <button class="edit-button" aria-label="Edit coin">Edit</button>
-        <button class="delete-button" aria-label="Delete coin">Delete</button>
-      </div>
+        <p class="coin-description"></p>
+        
+        <div class="coin-actions">
+          <button class="edit-button" aria-label="Edit coin">Edit</button>
+          <button class="delete-button" aria-label="Delete coin">Delete</button>
+        </div>
+
+      </div><!--end deets-->
     </article>
   </template>
 
