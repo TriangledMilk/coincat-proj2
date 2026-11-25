@@ -175,7 +175,10 @@ async function loadItems() {
       const node = template.content.cloneNode(true);// Clone the coin card template for this item.
  
       // Insert the coin name into the cloned card.
-      node.querySelector('.coin-image').innerHTML = `<img src="images/${item.gold_or_silver}_catcoin.png" alt="${item.name}">`;
+      const image = node.querySelector('.coin-image');
+      image.src = `./assets/${item.gold_or_silver}_catcoin.png`;
+      image.alt = `${item.gold_or_silver} coin: ${item.name}`;
+      
       node.querySelector('.coin-name').textContent = item.name + ` · ${item.count} coins`;
 
 

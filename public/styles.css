@@ -160,8 +160,23 @@ article.coin-item {
     flex-direction: row;
 }
 
+div.coinImg {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+}
+
 .coin-image{
     max-width: 100px;
+}
+
+div.coin-deets {
+    display: flex;
+    flex-direction: column;
+}
+
+.deets{
+    flex: 1;
 }
 
 .experience-heading,
