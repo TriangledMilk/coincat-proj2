@@ -45,7 +45,7 @@ app.put('/api/coin-collection/:id', async (req, res, next) => {
 app.get('/api/coin-collection', async (req, res, next) => {
   try {
     await connectDatabase();
-    const items = await CoinEntry.find().lean();
+    const items = await CoinEntry.find().lean(); //.lean() returns plain JavaScript objects instead of Mongoose documents, which is more efficient for read-only operations.
     res.json(items);
   } catch (error) {
     next(error);
